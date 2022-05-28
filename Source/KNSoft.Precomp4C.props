@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(Precomp4CBeforeTargets)' == '' and '$(Precomp4CAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <Precomp4CBeforeTargets>Midl</Precomp4CBeforeTargets>
+    <Precomp4CAfterTargets>PreBuildEvent</Precomp4CAfterTargets>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+
+    <Precomp4C_DllStub>
+      <OutputFile Condition="'%(Precomp4C_DllStub.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
+    </Precomp4C_DllStub>
+
+    <Precomp4C_Binary2C>
+      <OutputHeader Condition="'%(Precomp4C_Binary2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
+      <OutputSource Condition="'%(Precomp4C_Binary2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
+    </Precomp4C_Binary2C>
+
+    <Precomp4C_ObjectSymbol2C>
+      <OutputHeader Condition="'%(Precomp4C_ObjectSymbol2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
+      <OutputSource Condition="'%(Precomp4C_ObjectSymbol2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
+    </Precomp4C_ObjectSymbol2C>
+
+  </ItemDefinitionGroup>
+
+</Project>

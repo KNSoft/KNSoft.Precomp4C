@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Declare page schema, item names, targets and tasks -->
+
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="Precomp4C_DllStub">
+      <Targets>_Precomp4C_DllStub</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_Binary2C">
+      <Targets>_Precomp4C_Binary2C</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_ObjectSymbol2C">
+      <Targets>_Precomp4C_ObjectSymbol2C</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <UsingTask TaskName="KNSoft.Precomp4C.DllStubTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.ObjectSymbol2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+
+  <!-- Extend CleanDependsOn to clean -->
+
+  <PropertyGroup>
+    <CleanDependsOn>$(CleanDependsOn);Precomp4CClean</CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Precomp4CClean">
+    <Delete Files="%(Precomp4C_DllStub.OutputFile)" />
+    <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
+    <Delete Files="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)" />
+  </Target>
+
+  <!-- Targets choose out-of-dated or selected file to build -->
+
+  <Target
+      Name="_Precomp4C_DllStub"
+      BeforeTargets="$(Precomp4CBeforeTargets)"
+      AfterTargets="$(Precomp4CAfterTargets)"
+      Inputs="%(Precomp4C_DllStub.Identity);$(MSBuildProjectFile)"
+      Outputs="%(Precomp4C_DllStub.OutputFile)"
+      DependsOnTargets="_SelectedFiles">
+
+    <Message Importance="High" Text="Precomp4C DllStub Task compiling %(Precomp4C_DllStub.Identity)" />
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_DllStub Remove="@(Precomp4C_DllStub)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_DllStub_Source Include="@(Precomp4C_DllStub)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_DllStub)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_DllStub"
+      OutputsMetadataName = "OutputFile">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_DllStub_Source" />
+    </GetOutOfDateItems>
+
+    <DllStubTask
+        Condition   = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
+        Source      = "%(Precomp4C_DllStub_Source.Identity)"
+            
+        OutputFile  = "%(Precomp4C_DllStub_Source.OutputFile)"
+        Platform    = "$(PlatformTarget)" />
+
+  </Target>
+
+  <Target
+      Name="_Precomp4C_Binary2C"
+      BeforeTargets="$(Precomp4CBeforeTargets)"
+      AfterTargets="$(Precomp4CAfterTargets)"
+      Inputs="%(Precomp4C_Binary2C.Identity);$(MSBuildProjectFile)"
+      Outputs="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)"
+      DependsOnTargets="_SelectedFiles">
+
+    <Message Importance="High" Text="Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C.Identity)" />
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_Binary2C Remove="@(Precomp4C_Binary2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_Binary2C_Source Include="@(Precomp4C_Binary2C)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_Binary2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_Binary2C_H"
+      OutputsMetadataName = "OutputHeader">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_Binary2C_Source" />
+    </GetOutOfDateItems>
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_Binary2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_Binary2C_C"
+      OutputsMetadataName = "OutputSource">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_Binary2C_Source" />
+    </GetOutOfDateItems>
+
+    <Binary2CTask
+        Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
+        Source          = "%(Precomp4C_Binary2C_Source.Identity)"
+        
+        OutputHeader    = "%(Precomp4C_Binary2C_Source.OutputHeader)"
+        OutputSource    = "%(Precomp4C_Binary2C_Source.OutputSource)" />
+
+  </Target>
+
+  <Target
+      Name="_Precomp4C_ObjectSymbol2C"
+      BeforeTargets="$(Precomp4CBeforeTargets)"
+      AfterTargets="$(Precomp4CAfterTargets)"
+      Inputs="%(Precomp4C_ObjectSymbol2C.Identity);$(MSBuildProjectFile)"
+      Outputs="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)"
+      DependsOnTargets="_SelectedFiles">
+
+    <Message Importance="High" Text="Precomp4C ObjectSymbol2C Task compiling %(Precomp4C_ObjectSymbol2C.Identity)" />
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_ObjectSymbol2C Remove="@(Precomp4C_ObjectSymbol2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_ObjectSymbol2C_Source Include="@(Precomp4C_ObjectSymbol2C)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_ObjectSymbol2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_ObjectSymbol2C_H"
+      OutputsMetadataName = "OutputHeader">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_ObjectSymbol2C_Source" />
+    </GetOutOfDateItems>
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_ObjectSymbol2C)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_ObjectSymbol2C_C"
+      OutputsMetadataName = "OutputSource">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_ObjectSymbol2C_Source" />
+    </GetOutOfDateItems>
+
+    <ObjectSymbol2CTask
+        Condition       = "'@(Precomp4C_ObjectSymbol2C_Source)' != '' and '%(Precomp4C_ObjectSymbol2C_Source.ExcludedFromBuild)' != 'true'"
+        Source          = "%(Precomp4C_ObjectSymbol2C_Source.Identity)"
+            
+        OutputHeader    = "%(Precomp4C_ObjectSymbol2C_Source.OutputHeader)"
+        OutputSource    = "%(Precomp4C_ObjectSymbol2C_Source.OutputSource)" />
+
+  </Target>
+
+</Project>

@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>KNSoft.$(MSBuildProjectName)</AssemblyName>
+
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <IsPackable>true</IsPackable>
+    <Title>$(AssemblyName)</Title>
+    <Company>KNSoft</Company>
+    <RepositoryUrl>https://github.com/KNSoft/$(MSBuildProjectName)</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <OutputType>Library</OutputType>
+    <Product>$(MSBuildProjectName)</Product>
+    <Authors>KNSoft</Authors>
+
+    <TargetsForTfmSpecificBuildOutput>
+      $(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage
+    </TargetsForTfmSpecificBuildOutput>
+    <BuildOutputTargetFolder>lib</BuildOutputTargetFolder>
+    <NoWarn>NU5100</NoWarn>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Description>Precompiler for C/C++ project</Description>
+    <RepositoryType>git</RepositoryType>
+    <Version>1.0.0.1-alpha</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.0.0" PrivateAssets="all" ExcludeAssets="Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="KNSoft.Precomp4C.props" PackagePath="build\" />
+    <Content Include="KNSoft.Precomp4C.targets" PackagePath="build\" />
+    <Content Include="KNSoft.Precomp4C.xml" PackagePath="build\" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)" TargetPath="%(ReferenceCopyLocalPaths.DestinationSubPath)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+
+  <ItemType Name="Precomp4C_DllStub" DisplayName="Precomp4C: Dll Stub" />
+  <ItemType Name="Precomp4C_Binary2C" DisplayName="Precomp4C: Binary To C" />
+  <ItemType Name="Precomp4C_ObjectSymbol2C" DisplayName="Precomp4C: Object Symbol To C" />
+
+  <Rule Name="Precomp4C_DllStub_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Dll Stub" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_DllStub" />
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file" Name="OutputFile" DisplayName="Output File" Description="Path to output library (.lib)" Category="General" />
+
+  </Rule>
+
+  <Rule Name="Precomp4C_Binary2C_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Binary To C" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_Binary2C" />
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
+    <StringProperty Subtype="file" Name="OutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
+
+  </Rule>
+
+  <Rule Name="Precomp4C_ObjectSymbol2C_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Object Symbol To C" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_ObjectSymbol2C" />
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
+    <StringProperty Subtype="file" Name="OutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
+
+  </Rule>
+
+</ProjectSchemaDefinitions>
