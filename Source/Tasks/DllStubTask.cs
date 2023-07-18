@@ -111,10 +111,16 @@ namespace KNSoft.Precomp4C
 
                         DecoratedName = '_' + ExportName + '@' + ArgSize.ToString();
                         NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
+                    } else if (CallConv == "__cdecl") {
+                        DecoratedName = '_' + ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
+                    } else if (CallConv == "__fastcall")
+                    {
+                        DecoratedName = ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME;
                     } else
                     {
-                        DecoratedName = '_' + ExportName;
-                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME;
+                        throw new ArgumentException("Unrecognized calling convention: " + CallConv);
                     }
 
                     /* Type */
