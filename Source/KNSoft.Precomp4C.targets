@@ -42,8 +42,6 @@
       Outputs="%(Precomp4C_DllStub.OutputFile)"
       DependsOnTargets="_SelectedFiles">
 
-    <Message Importance="High" Text="Precomp4C DllStub Task compiling %(Precomp4C_DllStub.Identity)" />
-
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
       <Precomp4C_DllStub Remove="@(Precomp4C_DllStub)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
       <Precomp4C_DllStub_Source Include="@(Precomp4C_DllStub)" />
@@ -59,6 +57,10 @@
       OutputsMetadataName = "OutputFile">
       <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_DllStub_Source" />
     </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text       = "Precomp4C DllStub Task compiling %(Precomp4C_DllStub_Source.Identity)" />
 
     <DllStubTask
         Condition   = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
@@ -76,8 +78,6 @@
       Inputs="%(Precomp4C_Binary2C.Identity);$(MSBuildProjectFile)"
       Outputs="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)"
       DependsOnTargets="_SelectedFiles">
-
-    <Message Importance="High" Text="Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C.Identity)" />
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
       <Precomp4C_Binary2C Remove="@(Precomp4C_Binary2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
@@ -105,6 +105,10 @@
       <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_Binary2C_Source" />
     </GetOutOfDateItems>
 
+    <Message Condition  = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text       = "Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C_Source.Identity)" />
+
     <Binary2CTask
         Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
         Source          = "%(Precomp4C_Binary2C_Source.Identity)"
@@ -121,8 +125,6 @@
       Inputs="%(Precomp4C_ObjectSymbol2C.Identity);$(MSBuildProjectFile)"
       Outputs="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)"
       DependsOnTargets="_SelectedFiles">
-
-    <Message Importance="High" Text="Precomp4C ObjectSymbol2C Task compiling %(Precomp4C_ObjectSymbol2C.Identity)" />
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
       <Precomp4C_ObjectSymbol2C Remove="@(Precomp4C_ObjectSymbol2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
@@ -149,6 +151,10 @@
       OutputsMetadataName = "OutputSource">
       <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_ObjectSymbol2C_Source" />
     </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_ObjectSymbol2C_Source)' != '' and '%(Precomp4C_ObjectSymbol2C_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text="Precomp4C ObjectSymbol2C Task compiling %(Precomp4C_ObjectSymbol2C_Source.Identity)" />
 
     <ObjectSymbol2CTask
         Condition       = "'@(Precomp4C_ObjectSymbol2C_Source)' != '' and '%(Precomp4C_ObjectSymbol2C_Source.ExcludedFromBuild)' != 'true'"
