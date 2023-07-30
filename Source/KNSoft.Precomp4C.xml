@@ -15,6 +15,7 @@
       <DataSource Persistence="ProjectFile" ItemType="Precomp4C_DllStub" />
     </Rule.DataSource>
 
+    <StringListProperty Subtype="folder" Name="SearchPaths" DisplayName="Search Paths" Description="Directories to search paths specified in source" Category="General" />
     <StringProperty Subtype="file" Name="OutputFile" DisplayName="Output File" Description="Path to output library (.lib)" Category="General" />
 
   </Rule>

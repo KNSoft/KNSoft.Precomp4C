@@ -66,6 +66,7 @@
         Condition   = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
         Source      = "%(Precomp4C_DllStub_Source.Identity)"
             
+        SearchPaths = "%(Precomp4C_DllStub_Source.SearchPaths)"
         OutputFile  = "%(Precomp4C_DllStub_Source.OutputFile)"
         Platform    = "$(PlatformTarget)" />
 

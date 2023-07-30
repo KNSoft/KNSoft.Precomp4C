@@ -9,6 +9,7 @@
   <ItemDefinitionGroup>
 
     <Precomp4C_DllStub>
+      <SearchPaths Condition="'%(Precomp4C_DllStub.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)</SearchPaths>
       <OutputFile Condition="'%(Precomp4C_DllStub.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
     </Precomp4C_DllStub>
 
