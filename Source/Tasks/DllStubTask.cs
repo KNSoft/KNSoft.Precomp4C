@@ -114,7 +114,8 @@ public class DllStubTask : Precomp4CTask
 
                     DecoratedName = '_' + ExportName + '@' + ArgSize.ToString();
                     NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
-                } else if (CallConv == "__cdecl") {
+                } else if (CallConv == "__cdecl")
+                {
                     DecoratedName = '_' + ExportName;
                     NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
                 } else if (CallConv == "__fastcall")
