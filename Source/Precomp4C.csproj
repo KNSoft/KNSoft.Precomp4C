@@ -28,6 +28,7 @@
     <Description>Precompiler for C/C++ project</Description>
     <RepositoryType>git</RepositoryType>
     <Version>1.0.0.2-alpha</Version>
+    <PackageTags>windows utility native buildtool</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
