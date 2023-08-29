@@ -8,10 +8,10 @@
 
   <ItemDefinitionGroup>
 
-    <Precomp4C_DllStub>
-      <SearchPaths Condition="'%(Precomp4C_DllStub.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)</SearchPaths>
-      <OutputFile Condition="'%(Precomp4C_DllStub.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
-    </Precomp4C_DllStub>
+    <Precomp4C_MakeLib>
+      <SearchPaths Condition="'%(Precomp4C_MakeLib.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)</SearchPaths>
+      <OutputFile Condition="'%(Precomp4C_MakeLib.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
+    </Precomp4C_MakeLib>
 
     <Precomp4C_Binary2C>
       <OutputHeader Condition="'%(Precomp4C_Binary2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>

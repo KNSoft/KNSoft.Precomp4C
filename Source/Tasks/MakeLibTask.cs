@@ -8,7 +8,7 @@ using KNSoft.C4Lib.PEImage;
 
 namespace KNSoft.Precomp4C;
 
-public class DllStubTask : Precomp4CTask
+public class MakeLibTask : Precomp4CTask
 {
     [Required]
     public required String[] SearchPaths { get; set; }
@@ -46,7 +46,7 @@ public class DllStubTask : Precomp4CTask
             throw new InvalidDataException("Invalid XML file: " + XmlPath);
         }
 
-        if (doc.DocumentElement.Name != "DllStub")
+        if (doc.DocumentElement.Name != "MakeLib")
         {
             throw new InvalidDataException("Invalid root element: " + doc.DocumentElement.Name);
         }

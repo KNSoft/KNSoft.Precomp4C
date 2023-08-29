@@ -5,8 +5,8 @@
 
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
-    <AvailableItemName Include="Precomp4C_DllStub">
-      <Targets>_Precomp4C_DllStub</Targets>
+    <AvailableItemName Include="Precomp4C_MakeLib">
+      <Targets>_Precomp4C_MakeLib</Targets>
     </AvailableItemName>
     <AvailableItemName Include="Precomp4C_Binary2C">
       <Targets>_Precomp4C_Binary2C</Targets>
@@ -16,7 +16,7 @@
     </AvailableItemName>
   </ItemGroup>
 
-  <UsingTask TaskName="KNSoft.Precomp4C.DllStubTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.MakeLibTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.ObjectSymbol2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
 
@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <Target Name="Precomp4CClean">
-    <Delete Files="%(Precomp4C_DllStub.OutputFile)" />
+    <Delete Files="%(Precomp4C_MakeLib.OutputFile)" />
     <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
     <Delete Files="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)" />
   </Target>
@@ -35,39 +35,39 @@
   <!-- Targets choose out-of-dated or selected file to build -->
 
   <Target
-      Name="_Precomp4C_DllStub"
+      Name="_Precomp4C_MakeLib"
       BeforeTargets="$(Precomp4CBeforeTargets)"
       AfterTargets="$(Precomp4CAfterTargets)"
-      Inputs="%(Precomp4C_DllStub.Identity);$(MSBuildProjectFile)"
-      Outputs="%(Precomp4C_DllStub.OutputFile)"
+      Inputs="%(Precomp4C_MakeLib.Identity);$(MSBuildProjectFile)"
+      Outputs="%(Precomp4C_MakeLib.OutputFile)"
       DependsOnTargets="_SelectedFiles">
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
-      <Precomp4C_DllStub Remove="@(Precomp4C_DllStub)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
-      <Precomp4C_DllStub_Source Include="@(Precomp4C_DllStub)" />
+      <Precomp4C_MakeLib Remove="@(Precomp4C_MakeLib)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_MakeLib_Source Include="@(Precomp4C_MakeLib)" />
     </ItemGroup>
 
     <GetOutOfDateItems
       Condition           = "'$(SelectedFiles)' == ''"
-      Sources             = "@(Precomp4C_DllStub)"
+      Sources             = "@(Precomp4C_MakeLib)"
       TLogDirectory       = "$(TLogLocation)"
       TrackFileAccess     = "$(TrackFileAccess)"
 
-      TLogNamePrefix      = "Precomp4C_DllStub"
+      TLogNamePrefix      = "Precomp4C_MakeLib"
       OutputsMetadataName = "OutputFile">
-      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_DllStub_Source" />
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_MakeLib_Source" />
     </GetOutOfDateItems>
 
-    <Message Condition  = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
+    <Message Condition  = "'@(Precomp4C_MakeLib_Source)' != '' and '%(Precomp4C_MakeLib_Source.ExcludedFromBuild)' != 'true'"
              Importance = "High"
-             Text       = "Precomp4C DllStub Task compiling %(Precomp4C_DllStub_Source.Identity)" />
+             Text       = "Precomp4C MakeLib Task compiling %(Precomp4C_MakeLib_Source.Identity)" />
 
-    <DllStubTask
-        Condition   = "'@(Precomp4C_DllStub_Source)' != '' and '%(Precomp4C_DllStub_Source.ExcludedFromBuild)' != 'true'"
-        Source      = "%(Precomp4C_DllStub_Source.Identity)"
+    <MakeLibTask
+        Condition   = "'@(Precomp4C_MakeLib_Source)' != '' and '%(Precomp4C_MakeLib_Source.ExcludedFromBuild)' != 'true'"
+        Source      = "%(Precomp4C_MakeLib_Source.Identity)"
             
-        SearchPaths = "%(Precomp4C_DllStub_Source.SearchPaths)"
-        OutputFile  = "%(Precomp4C_DllStub_Source.OutputFile)"
+        SearchPaths = "%(Precomp4C_MakeLib_Source.SearchPaths)"
+        OutputFile  = "%(Precomp4C_MakeLib_Source.OutputFile)"
         Platform    = "$(PlatformTarget)" />
 
   </Target>
