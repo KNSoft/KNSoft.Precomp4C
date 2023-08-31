@@ -27,7 +27,7 @@
     <PackageId>$(AssemblyName)</PackageId>
     <Description>Precompiler for C/C++ project</Description>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.0.2-alpha</Version>
+    <Version>1.0.3-alpha</Version>
     <PackageTags>windows utility native buildtool</PackageTags>
   </PropertyGroup>
 
