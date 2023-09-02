@@ -84,7 +84,9 @@ public class MakeLibTask : Precomp4CTask
                 }
 
                 /* CallConv */
-                if (Machine == IMAGE_FILE_MACHINE.AMD64)
+                if (Machine == IMAGE_FILE_MACHINE.AMD64 ||
+                    Machine == IMAGE_FILE_MACHINE.ARM64 ||
+                    Machine == IMAGE_FILE_MACHINE.ARMNT)
                 {
                     CallConv = "__fastcall";
                 } else
