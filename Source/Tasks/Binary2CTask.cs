@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Microsoft.Build.Framework;
-
 using KNSoft.C4Lib;
+using Microsoft.Build.Framework;
 
 namespace KNSoft.Precomp4C;
 
@@ -23,9 +22,11 @@ public class Binary2CTask : Precomp4CTask
 
             Byte[] Data = File.ReadAllBytes(Source);
             UInt32 RemainSize = (UInt32)Data.Length;
-            String SymbolDef = String.Format("unsigned char {0}[{1:D}]", "Precomp4C_Binary2C_" + Path.GetFileNameWithoutExtension(Source), RemainSize);
-            Rtl.WriteToStream(HeaderStream, Encoding.UTF8.GetBytes("extern " + SymbolDef + ";\r\n"));
-            Rtl.WriteToStream(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
+            String SymbolDef = String.Format("unsigned char {0}[{1:D}]",
+                                             "Precomp4C_Binary2C_" + Path.GetFileNameWithoutExtension(Source),
+                                             RemainSize);
+            Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("extern " + SymbolDef + ";\r\n"));
+            Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
             while (RemainSize > 0)
             {
                 UInt32 LineSize = Math.Min(RemainSize, BytesPerLine);
@@ -39,9 +40,9 @@ public class Binary2CTask : Precomp4CTask
                         Line += ", ";
                     }
                 }
-                Rtl.WriteToStream(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
+                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
             }
-            Rtl.WriteToStream(SourceStream, "};\r\n"u8.ToArray());
+            Rtl.StreamWrite(SourceStream, "};\r\n"u8.ToArray());
 
             HeaderStream.Dispose();
             SourceStream.Dispose();

@@ -3,12 +3,11 @@ using System.IO;
 using System.Linq;
 using Microsoft.Build.Framework;
 
-using KNSoft.C4Lib;
 using System.Xml;
 
 namespace KNSoft.Precomp4C;
 
-public class ObjectSymbol2CTask : Precomp4CTask
+public class LibExtractTask : Precomp4CTask
 {
     [Required]
     public required String OutputHeader { get; set; }
@@ -29,7 +28,7 @@ public class ObjectSymbol2CTask : Precomp4CTask
                 throw new InvalidDataException("Invalid XML file: " + Source);
             }
 
-            if (doc.DocumentElement.Name != "ObjectSymbol2C")
+            if (doc.DocumentElement.Name != "LibExtract")
             {
                 throw new InvalidDataException("Invalid root element: " + doc.DocumentElement.Name);
             }

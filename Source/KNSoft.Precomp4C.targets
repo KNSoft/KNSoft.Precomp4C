@@ -5,8 +5,8 @@
 
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
-    <AvailableItemName Include="Precomp4C_MakeLib">
-      <Targets>_Precomp4C_MakeLib</Targets>
+    <AvailableItemName Include="Precomp4C_LibCreate">
+      <Targets>_Precomp4C_LibCreate</Targets>
     </AvailableItemName>
     <AvailableItemName Include="Precomp4C_Binary2C">
       <Targets>_Precomp4C_Binary2C</Targets>
@@ -16,7 +16,7 @@
     </AvailableItemName>
   </ItemGroup>
 
-  <UsingTask TaskName="KNSoft.Precomp4C.MakeLibTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.LibCreateTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.ObjectSymbol2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
 
@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <Target Name="Precomp4CClean">
-    <Delete Files="%(Precomp4C_MakeLib.OutputFile)" />
+    <Delete Files="%(Precomp4C_LibCreate.OutputFile)" />
     <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
     <Delete Files="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)" />
   </Target>
@@ -35,39 +35,39 @@
   <!-- Targets choose out-of-dated or selected file to build -->
 
   <Target
-      Name="_Precomp4C_MakeLib"
+      Name="_Precomp4C_LibCreate"
       BeforeTargets="$(Precomp4CBeforeTargets)"
       AfterTargets="$(Precomp4CAfterTargets)"
-      Inputs="%(Precomp4C_MakeLib.Identity);$(MSBuildProjectFile)"
-      Outputs="%(Precomp4C_MakeLib.OutputFile)"
+      Inputs="%(Precomp4C_LibCreate.Identity);$(MSBuildProjectFile)"
+      Outputs="%(Precomp4C_LibCreate.OutputFile)"
       DependsOnTargets="_SelectedFiles">
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
-      <Precomp4C_MakeLib Remove="@(Precomp4C_MakeLib)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
-      <Precomp4C_MakeLib_Source Include="@(Precomp4C_MakeLib)" />
+      <Precomp4C_LibCreate Remove="@(Precomp4C_LibCreate)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_LibCreate_Source Include="@(Precomp4C_LibCreate)" />
     </ItemGroup>
 
     <GetOutOfDateItems
       Condition           = "'$(SelectedFiles)' == ''"
-      Sources             = "@(Precomp4C_MakeLib)"
+      Sources             = "@(Precomp4C_LibCreate)"
       TLogDirectory       = "$(TLogLocation)"
       TrackFileAccess     = "$(TrackFileAccess)"
 
-      TLogNamePrefix      = "Precomp4C_MakeLib"
+      TLogNamePrefix      = "Precomp4C_LibCreate"
       OutputsMetadataName = "OutputFile">
-      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_MakeLib_Source" />
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_LibCreate_Source" />
     </GetOutOfDateItems>
 
-    <Message Condition  = "'@(Precomp4C_MakeLib_Source)' != '' and '%(Precomp4C_MakeLib_Source.ExcludedFromBuild)' != 'true'"
+    <Message Condition  = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
              Importance = "High"
-             Text       = "Precomp4C MakeLib Task compiling %(Precomp4C_MakeLib_Source.Identity)" />
+             Text       = "Precomp4C LibCreate Task compiling %(Precomp4C_LibCreate_Source.Identity)" />
 
-    <MakeLibTask
-        Condition   = "'@(Precomp4C_MakeLib_Source)' != '' and '%(Precomp4C_MakeLib_Source.ExcludedFromBuild)' != 'true'"
-        Source      = "%(Precomp4C_MakeLib_Source.Identity)"
+    <LibCreateTask
+        Condition   = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
+        Source      = "%(Precomp4C_LibCreate_Source.Identity)"
             
-        SearchPaths = "%(Precomp4C_MakeLib_Source.SearchPaths)"
-        OutputFile  = "%(Precomp4C_MakeLib_Source.OutputFile)"
+        SearchPaths = "%(Precomp4C_LibCreate_Source.SearchPaths)"
+        OutputFile  = "%(Precomp4C_LibCreate_Source.OutputFile)"
         Platform    = "$(PlatformTarget)" />
 
   </Target>

@@ -8,7 +8,7 @@ using KNSoft.C4Lib.PEImage;
 
 namespace KNSoft.Precomp4C;
 
-public class MakeLibTask : Precomp4CTask
+public class LibCreateTask : Precomp4CTask
 {
     [Required]
     public required String[] SearchPaths { get; set; }
@@ -46,12 +46,12 @@ public class MakeLibTask : Precomp4CTask
             throw new InvalidDataException("Invalid XML file: " + XmlPath);
         }
 
-        if (doc.DocumentElement.Name != "MakeLib")
+        if (doc.DocumentElement.Name != "LibCreate")
         {
             throw new InvalidDataException("Invalid root element: " + doc.DocumentElement.Name);
         }
 
-        ArchiveFile Ar = new(Machine);
+        ArchiveFile Ar = new();
         Ar.AddImport("Precomp4C", ObjectFile.NewNullIIDObject(Machine));
 
         foreach (XmlElement Dll in doc.DocumentElement.GetElementsByTagName("Dll").OfType<XmlElement>())
@@ -145,7 +145,7 @@ public class MakeLibTask : Precomp4CTask
                     ObjectType = IMPORT_OBJECT_TYPE.CODE;
                 }
 
-                Ar.AddImport(ObjectType, NameType, DllName, DecoratedName);
+                Ar.AddImport(Machine, ObjectType, NameType, DllName, DecoratedName);
             }
         }
 

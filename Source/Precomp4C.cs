@@ -30,9 +30,9 @@ namespace KNSoft.Precomp4C
             FileStream OutputHeaderStream = File.Open(HeaderPath, FileMode.Create, FileAccess.Write);
             FileStream OutputSourceStream = File.Open(SourcePath, FileMode.Create, FileAccess.Write);
 
-            Rtl.WriteToStream(OutputHeaderStream, AutoGenerateComment);
-            Rtl.WriteToStream(OutputSourceStream, AutoGenerateComment);
-            Rtl.WriteToStream(OutputHeaderStream, "#pragma once\r\n\r\n"u8.ToArray());
+            Rtl.StreamWrite(OutputHeaderStream, AutoGenerateComment);
+            Rtl.StreamWrite(OutputSourceStream, AutoGenerateComment);
+            Rtl.StreamWrite(OutputHeaderStream, "#pragma once\r\n\r\n"u8.ToArray());
 
             HeaderStream = OutputHeaderStream;
             SourceStream = OutputSourceStream;
@@ -43,6 +43,10 @@ namespace KNSoft.Precomp4C
     {
         static int Main()
         {
+            C4Lib.PEImage.ArchiveFile ar = new(File.ReadAllBytes(@"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\um\x64\dxcompiler.lib"));
+
+
+
             return 0;
         }
     }
