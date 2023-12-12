@@ -3,10 +3,10 @@
 
 
   <ItemType Name="Precomp4C_LibCreate" DisplayName="Precomp4C: Lib Create" />
+  <ItemType Name="Precomp4C_LibExtract" DisplayName="Precomp4C: Lib Extract" />
   <ItemType Name="Precomp4C_Binary2C" DisplayName="Precomp4C: Binary To C" />
-  <ItemType Name="Precomp4C_ObjectSymbol2C" DisplayName="Precomp4C: Object Symbol To C" />
 
-  <Rule Name="Precomp4C_LibCreate_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Make Lib" Order="300">
+  <Rule Name="Precomp4C_LibCreate_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Lib Create" Order="300">
 
     <Rule.Categories>
       <Category Name="General" DisplayName="General" />
@@ -20,6 +20,20 @@
 
   </Rule>
 
+  <Rule Name="Precomp4C_LibExtract_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Lib Extract" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_LibExtract" />
+    </Rule.DataSource>
+
+    <StringListProperty Subtype="folder" Name="SearchPaths" DisplayName="Search Paths" Description="Directories to search paths specified in source" Category="General" />
+    <StringProperty Subtype="folder" Name="OutputDirectory" DisplayName="Output Directory" Description="Path to directory to create and holds outputs" Category="General" />
+
+  </Rule>
+
   <Rule Name="Precomp4C_Binary2C_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Binary To C" Order="300">
 
     <Rule.Categories>
@@ -27,20 +41,6 @@
     </Rule.Categories>
     <Rule.DataSource>
       <DataSource Persistence="ProjectFile" ItemType="Precomp4C_Binary2C" />
-    </Rule.DataSource>
-
-    <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
-    <StringProperty Subtype="file" Name="OutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
-
-  </Rule>
-
-  <Rule Name="Precomp4C_ObjectSymbol2C_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Object Symbol To C" Order="300">
-
-    <Rule.Categories>
-      <Category Name="General" DisplayName="General" />
-    </Rule.Categories>
-    <Rule.DataSource>
-      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_ObjectSymbol2C" />
     </Rule.DataSource>
 
     <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />

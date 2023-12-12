@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Xml;
 using System.Linq;
+using System.Xml;
 using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib.PEImage;
@@ -57,7 +57,7 @@ public class LibCreateTask : Precomp4CTask
         foreach (XmlElement Dll in doc.DocumentElement.GetElementsByTagName("Dll").OfType<XmlElement>())
         {
             XmlAttributeCollection DllAttr = Dll.Attributes;
-            String? DllName = (DllAttr["Name"]?.Value) ?? throw new ArgumentException("Dll 'Name' unspecified in: " + Dll.OuterXml);
+            String DllName = DllAttr["Name"]?.Value ?? throw new ArgumentException("Dll 'Name' unspecified in: " + Dll.OuterXml);
 
             Ar.AddImport(DllName, ObjectFile.NewDllImportStubObject(Machine, DllName));
 
@@ -69,7 +69,7 @@ public class LibCreateTask : Precomp4CTask
                 }
 
                 XmlAttributeCollection ExportAttr = DllExport.Attributes;
-                String? ExportName = (ExportAttr["Name"]?.Value) ?? throw new ArgumentException("Export 'Name' unspecified in: " + DllExport.OuterXml);
+                String ExportName = ExportAttr["Name"]?.Value ?? throw new ArgumentException("Export 'Name' unspecified in: " + DllExport.OuterXml);
 
                 String? CallConv, Archs, Arg, Type;
                 String DecoratedName;

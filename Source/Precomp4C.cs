@@ -43,10 +43,6 @@ namespace KNSoft.Precomp4C
     {
         static int Main()
         {
-            C4Lib.PEImage.ArchiveFile ar = new(File.ReadAllBytes(@"C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\um\x64\dxcompiler.lib"));
-
-
-
             return 0;
         }
     }

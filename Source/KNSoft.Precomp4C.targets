@@ -1,24 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- Declare page schema, item names, targets and tasks -->
+  <!-- Declare page schema, item names and tasks -->
 
   <ItemGroup>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
     <AvailableItemName Include="Precomp4C_LibCreate">
       <Targets>_Precomp4C_LibCreate</Targets>
     </AvailableItemName>
+    <AvailableItemName Include="Precomp4C_LibExtract">
+      <Targets>_Precomp4C_LibExtract</Targets>
+    </AvailableItemName>
     <AvailableItemName Include="Precomp4C_Binary2C">
       <Targets>_Precomp4C_Binary2C</Targets>
-    </AvailableItemName>
-    <AvailableItemName Include="Precomp4C_ObjectSymbol2C">
-      <Targets>_Precomp4C_ObjectSymbol2C</Targets>
     </AvailableItemName>
   </ItemGroup>
 
   <UsingTask TaskName="KNSoft.Precomp4C.LibCreateTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.LibExtractTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
-  <UsingTask TaskName="KNSoft.Precomp4C.ObjectSymbol2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
 
   <!-- Extend CleanDependsOn to clean -->
 
@@ -28,19 +28,19 @@
 
   <Target Name="Precomp4CClean">
     <Delete Files="%(Precomp4C_LibCreate.OutputFile)" />
+    <RemoveDir Directories="%(Precomp4C_LibExtract.OutputDirectory)" />
     <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
-    <Delete Files="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)" />
   </Target>
 
-  <!-- Targets choose out-of-dated or selected file to build -->
+  <!-- Targets -->
 
   <Target
-      Name="_Precomp4C_LibCreate"
-      BeforeTargets="$(Precomp4CBeforeTargets)"
-      AfterTargets="$(Precomp4CAfterTargets)"
-      Inputs="%(Precomp4C_LibCreate.Identity);$(MSBuildProjectFile)"
-      Outputs="%(Precomp4C_LibCreate.OutputFile)"
-      DependsOnTargets="_SelectedFiles">
+    Name="_Precomp4C_LibCreate"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_LibCreate.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_LibCreate.OutputFile)"
+    DependsOnTargets="_SelectedFiles">
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
       <Precomp4C_LibCreate Remove="@(Precomp4C_LibCreate)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
@@ -65,7 +65,7 @@
     <LibCreateTask
         Condition   = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
         Source      = "%(Precomp4C_LibCreate_Source.Identity)"
-            
+
         SearchPaths = "%(Precomp4C_LibCreate_Source.SearchPaths)"
         OutputFile  = "%(Precomp4C_LibCreate_Source.OutputFile)"
         Platform    = "$(PlatformTarget)" />
@@ -73,12 +73,58 @@
   </Target>
 
   <Target
-      Name="_Precomp4C_Binary2C"
-      BeforeTargets="$(Precomp4CBeforeTargets)"
-      AfterTargets="$(Precomp4CAfterTargets)"
-      Inputs="%(Precomp4C_Binary2C.Identity);$(MSBuildProjectFile)"
-      Outputs="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)"
-      DependsOnTargets="_SelectedFiles">
+    Name="_Precomp4C_LibExtract"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_LibExtract.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_LibExtract.OutputDirectory)"
+    DependsOnTargets="_SelectedFiles">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <Precomp4C_LibExtract Remove="@(Precomp4C_LibExtract)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+      <Precomp4C_LibExtract_Source Include="@(Precomp4C_LibExtract)" />
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition           = "'$(SelectedFiles)' == ''"
+      Sources             = "@(Precomp4C_LibExtract)"
+      TLogDirectory       = "$(TLogLocation)"
+      TrackFileAccess     = "$(TrackFileAccess)"
+
+      TLogNamePrefix      = "Precomp4C_LibExtract"
+      OutputsMetadataName = "OutputFile">
+      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_LibExtract_Source" />
+    </GetOutOfDateItems>
+
+    <Message Condition  = "'@(Precomp4C_LibExtract_Source)' != '' and '%(Precomp4C_LibExtract_Source.ExcludedFromBuild)' != 'true'"
+             Importance = "High"
+             Text="Precomp4C LibExtract Task compiling %(Precomp4C_LibExtract_Source.Identity)" />
+
+    <LibExtractTask
+        Condition       = "'@(Precomp4C_LibExtract_Source)' != '' and '%(Precomp4C_LibExtract_Source.ExcludedFromBuild)' != 'true'"
+        Source          = "%(Precomp4C_LibExtract_Source.Identity)"
+
+        SearchPaths     = "%(Precomp4C_LibExtract_Source.SearchPaths)"
+        OutputDirectory = "%(Precomp4C_LibExtract_Source.OutputDirectory)"
+        Platform        = "$(PlatformTarget)">
+      <Output TaskParameter="ExtractedFiles" ItemName="Precomp4C_LibExtract_ExtractedFiles"/>
+    </LibExtractTask>
+
+    <ItemGroup>
+      <Link Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+      <Lib Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+      <Obj Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
+    </ItemGroup>
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_Binary2C"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets)"
+    Inputs="%(Precomp4C_Binary2C.Identity);$(MSBuildProjectFile)"
+    Outputs="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)"
+    DependsOnTargets="_SelectedFiles">
 
     <ItemGroup Condition="'@(SelectedFiles)' != ''">
       <Precomp4C_Binary2C Remove="@(Precomp4C_Binary2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
@@ -111,58 +157,11 @@
              Text       = "Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C_Source.Identity)" />
 
     <Binary2CTask
-        Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
-        Source          = "%(Precomp4C_Binary2C_Source.Identity)"
-        
-        OutputHeader    = "%(Precomp4C_Binary2C_Source.OutputHeader)"
-        OutputSource    = "%(Precomp4C_Binary2C_Source.OutputSource)" />
+      Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
+      Source          = "%(Precomp4C_Binary2C_Source.Identity)"
 
-  </Target>
-
-  <Target
-      Name="_Precomp4C_ObjectSymbol2C"
-      BeforeTargets="$(Precomp4CBeforeTargets)"
-      AfterTargets="$(Precomp4CAfterTargets)"
-      Inputs="%(Precomp4C_ObjectSymbol2C.Identity);$(MSBuildProjectFile)"
-      Outputs="%(Precomp4C_ObjectSymbol2C.OutputHeader);%(Precomp4C_ObjectSymbol2C.OutputSource)"
-      DependsOnTargets="_SelectedFiles">
-
-    <ItemGroup Condition="'@(SelectedFiles)' != ''">
-      <Precomp4C_ObjectSymbol2C Remove="@(Precomp4C_ObjectSymbol2C)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
-      <Precomp4C_ObjectSymbol2C_Source Include="@(Precomp4C_ObjectSymbol2C)" />
-    </ItemGroup>
-
-    <GetOutOfDateItems
-      Condition           = "'$(SelectedFiles)' == ''"
-      Sources             = "@(Precomp4C_ObjectSymbol2C)"
-      TLogDirectory       = "$(TLogLocation)"
-      TrackFileAccess     = "$(TrackFileAccess)"
-
-      TLogNamePrefix      = "Precomp4C_ObjectSymbol2C_H"
-      OutputsMetadataName = "OutputHeader">
-      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_ObjectSymbol2C_Source" />
-    </GetOutOfDateItems>
-    <GetOutOfDateItems
-      Condition           = "'$(SelectedFiles)' == ''"
-      Sources             = "@(Precomp4C_ObjectSymbol2C)"
-      TLogDirectory       = "$(TLogLocation)"
-      TrackFileAccess     = "$(TrackFileAccess)"
-
-      TLogNamePrefix      = "Precomp4C_ObjectSymbol2C_C"
-      OutputsMetadataName = "OutputSource">
-      <Output TaskParameter="OutOfDateSources" ItemName="Precomp4C_ObjectSymbol2C_Source" />
-    </GetOutOfDateItems>
-
-    <Message Condition  = "'@(Precomp4C_ObjectSymbol2C_Source)' != '' and '%(Precomp4C_ObjectSymbol2C_Source.ExcludedFromBuild)' != 'true'"
-             Importance = "High"
-             Text="Precomp4C ObjectSymbol2C Task compiling %(Precomp4C_ObjectSymbol2C_Source.Identity)" />
-
-    <ObjectSymbol2CTask
-        Condition       = "'@(Precomp4C_ObjectSymbol2C_Source)' != '' and '%(Precomp4C_ObjectSymbol2C_Source.ExcludedFromBuild)' != 'true'"
-        Source          = "%(Precomp4C_ObjectSymbol2C_Source.Identity)"
-            
-        OutputHeader    = "%(Precomp4C_ObjectSymbol2C_Source.OutputHeader)"
-        OutputSource    = "%(Precomp4C_ObjectSymbol2C_Source.OutputSource)" />
+      OutputHeader    = "%(Precomp4C_Binary2C_Source.OutputHeader)"
+      OutputSource    = "%(Precomp4C_Binary2C_Source.OutputSource)" />
 
   </Target>
 

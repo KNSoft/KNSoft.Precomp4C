@@ -13,15 +13,15 @@
       <OutputFile Condition="'%(Precomp4C_LibCreate.OutputFile)' == ''">$(OutDir)%(Filename).lib</OutputFile>
     </Precomp4C_LibCreate>
 
+    <Precomp4C_LibExtract>
+      <SearchPaths Condition="'%(Precomp4C_LibExtract.SearchPaths)' == ''">$(ProjectDir);$(VCToolsInstallDir)lib\$(PlatformTarget)</SearchPaths>
+      <OutputDirectory Condition="'%(Precomp4C_LibExtract.OutputDirectory)' == ''">$(IntDir)LibExtract</OutputDirectory>
+    </Precomp4C_LibExtract>
+
     <Precomp4C_Binary2C>
       <OutputHeader Condition="'%(Precomp4C_Binary2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
       <OutputSource Condition="'%(Precomp4C_Binary2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
     </Precomp4C_Binary2C>
-
-    <Precomp4C_ObjectSymbol2C>
-      <OutputHeader Condition="'%(Precomp4C_ObjectSymbol2C.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
-      <OutputSource Condition="'%(Precomp4C_ObjectSymbol2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
-    </Precomp4C_ObjectSymbol2C>
 
   </ItemDefinitionGroup>
 
