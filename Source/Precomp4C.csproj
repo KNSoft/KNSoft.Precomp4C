@@ -30,7 +30,7 @@
     <PackageId>$(AssemblyName)</PackageId>
     <Description>Precompiler for C/C++ project</Description>
     <RepositoryType>git</RepositoryType>
-    <Version>1.0.5-alpha</Version>
+    <Version>1.0.6-alpha</Version>
     <PackageTags>windows utility native buildtool</PackageTags>
   </PropertyGroup>
 
