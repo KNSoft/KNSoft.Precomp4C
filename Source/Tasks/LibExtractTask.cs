@@ -3,8 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
 using Microsoft.Build.Framework;
 
+using KNSoft.C4Lib;
 using KNSoft.C4Lib.PEImage;
 
 namespace KNSoft.Precomp4C;
@@ -42,21 +45,19 @@ public class LibExtractTask : Precomp4CTask
 
             DirectoryInfo OutputDirectoryInfo = Directory.CreateDirectory(OutputDirectory);
             List<String> ExtractedObjectFiles = [];
+            IMAGE_FILE_MACHINE Machine = FileHeader.GetMachineType(Platform);
 
             foreach (XmlElement Lib in doc.DocumentElement.GetElementsByTagName("Lib").OfType<XmlElement>())
             {
                 XmlAttributeCollection LibAttr = Lib.Attributes;
                 String LibName = LibAttr["Name"]?.Value ?? throw new ArgumentException("Lib 'Name' unspecified in: " + Lib.OuterXml);
 
-                String? Archs = LibAttr["Arch"]?.Value;
-                if (Archs != null)
+                if (FilterXmlArch(LibAttr, Machine))
                 {
-                    IMAGE_FILE_MACHINE Machine = FileHeader.GetMachineType(Platform);
-                    if (!Array.Exists(Archs.Split(' '), x => FileHeader.GetMachineType(x) == Machine))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
+
+                Boolean StripDebugInfo = LibAttr["StripDebugInfo"] != null;
 
                 FileInfo[] Libs = [];
                 foreach (String SearchPath in SearchPaths)
@@ -81,6 +82,12 @@ public class LibExtractTask : Precomp4CTask
                 {
                     XmlAttributeCollection ObjectAttr = ObjectFile.Attributes;
                     String ObjectName = ObjectAttr["Name"]?.Value ?? throw new ArgumentException("Object 'Name' unspecified in: " + ObjectFile.OuterXml);
+
+                    if (FilterXmlArch(ObjectAttr, Machine))
+                    {
+                        continue;
+                    }
+
                     Predicate<ArchiveFile.Import>[] Match =
                     [
                         x => Path.GetFileName(x.Name) == ObjectName,
@@ -95,7 +102,31 @@ public class LibExtractTask : Precomp4CTask
                     String OutputObjectFilePath = OutputLibDirectoryInfo.FullName +
                                                   Path.DirectorySeparatorChar +
                                                   Path.GetFileName(ExtractImport.Name);
-                    File.WriteAllBytes(OutputObjectFilePath, ExtractImport.Data);
+                    Byte[] ObjectData = ExtractImport.Data;
+
+                    if (StripDebugInfo)
+                    {
+                        IMAGE_FILE_HEADER FileHeader = Rtl.RawToStruct<IMAGE_FILE_HEADER>(Rtl.ArrayResize(ObjectData, Marshal.SizeOf<IMAGE_FILE_HEADER>()));
+                        if ((FileHeader.Characteristics & (UInt16)IMAGE_FILE_CHARACTERISTICS.DEBUG_STRIPPED) == 0)
+                        {
+                            FileHeader.Characteristics |= (UInt16)IMAGE_FILE_CHARACTERISTICS.DEBUG_STRIPPED;
+                            Rtl.StructToRaw(FileHeader).CopyTo(ObjectData, 0);
+
+                            Int32 SectionHeaderIndex = Marshal.SizeOf<IMAGE_FILE_HEADER>();
+                            for (UInt16 i = 0; i < FileHeader.NumberOfSections; i++)
+                            {
+                                IMAGE_SECTION_HEADER SectionHeader = Rtl.RawToStruct<IMAGE_SECTION_HEADER>(Rtl.ArraySlice(ObjectData, SectionHeaderIndex, Marshal.SizeOf<IMAGE_SECTION_HEADER>()));
+                                if (SectionHeader.Name.SequenceEqual(".debug$T"u8.ToArray()))
+                                {
+                                    SectionHeader.Name = [0, 0, 0, 0, 0, 0, 0, 0];
+                                    Rtl.StructToRaw(SectionHeader).CopyTo(ObjectData, SectionHeaderIndex);
+                                }
+                                SectionHeaderIndex += Marshal.SizeOf<IMAGE_SECTION_HEADER>();
+                            }
+                        }
+                    }
+
+                    File.WriteAllBytes(OutputObjectFilePath, ObjectData);
                     ExtractedObjectFiles.Add(OutputObjectFilePath);
 
                     Log.LogMessage(MessageImportance.High, "\t-> " + OutputObjectFilePath);

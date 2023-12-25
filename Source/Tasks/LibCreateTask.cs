@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml;
+
 using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib.PEImage;
@@ -71,14 +72,13 @@ public class LibCreateTask : Precomp4CTask
                 XmlAttributeCollection ExportAttr = DllExport.Attributes;
                 String ExportName = ExportAttr["Name"]?.Value ?? throw new ArgumentException("Export 'Name' unspecified in: " + DllExport.OuterXml);
 
-                String? CallConv, Archs, Arg, Type;
+                String? CallConv, Arg, Type;
                 String DecoratedName;
                 IMPORT_OBJECT_NAME_TYPE NameType;
                 IMPORT_OBJECT_TYPE ObjectType;
 
                 /* Arch */
-                Archs = ExportAttr["Arch"]?.Value;
-                if (Archs != null && !Array.Exists(Archs.Split(' '), x => FileHeader.GetMachineType(x) == Machine))
+                if (FilterXmlArch(ExportAttr, Machine))
                 {
                     continue;
                 }

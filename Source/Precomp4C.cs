@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Xml;
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 using KNSoft.C4Lib;
+using KNSoft.C4Lib.PEImage;
 
 namespace KNSoft.Precomp4C
 {
@@ -36,6 +39,18 @@ namespace KNSoft.Precomp4C
 
             HeaderStream = OutputHeaderStream;
             SourceStream = OutputSourceStream;
+        }
+
+        public static Boolean FilterXmlArch(XmlAttributeCollection XmlAttr, IMAGE_FILE_MACHINE Machine)
+        {
+            String? Archs = XmlAttr["Arch"]?.Value;
+
+            if (Archs != null && !Array.Exists(Archs.Split(' '), x => FileHeader.GetMachineType(x) == Machine))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 
