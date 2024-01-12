@@ -30,6 +30,15 @@ public class LibExtractTask : Precomp4CTask
     {
         try
         {
+            DateTime TempTime, LastWriteTime;
+
+            LastWriteTime = new FileInfo(Source).LastWriteTime;
+            TempTime = new FileInfo(BuildEngine.ProjectFileOfTaskNode).LastWriteTime;
+            if (LastWriteTime < TempTime)
+            {
+                LastWriteTime = TempTime;
+            }
+
             XmlDocument doc = new();
             doc.Load(Source);
 
@@ -74,6 +83,10 @@ public class LibExtractTask : Precomp4CTask
                     throw new FileNotFoundException("Multiple " + LibName + " found in specified directories");
                 }
 
+                if (LastWriteTime < Libs[0].LastWriteTime)
+                {
+                    LastWriteTime = Libs[0].LastWriteTime;
+                }
                 Byte[] LibData = File.ReadAllBytes(Libs[0].FullName);
                 ArchiveFile Ar = new(LibData);
                 DirectoryInfo OutputLibDirectoryInfo = Directory.CreateDirectory(OutputDirectory + Path.DirectorySeparatorChar + Libs[0].Name);
@@ -102,8 +115,15 @@ public class LibExtractTask : Precomp4CTask
                     String OutputObjectFilePath = OutputLibDirectoryInfo.FullName +
                                                   Path.DirectorySeparatorChar +
                                                   Path.GetFileName(ExtractImport.Name);
-                    Byte[] ObjectData = ExtractImport.Data;
+                    FileInfo OutputObject = new(OutputObjectFilePath);
+                    if (OutputObject.Exists && OutputObject.LastWriteTime > LastWriteTime)
+                    {
+                        ExtractedObjectFiles.Add(OutputObjectFilePath);
+                        Log.LogMessage(MessageImportance.High, "\t-> " + OutputObjectFilePath + " is up-to-date");
+                        continue;
+                    }
 
+                    Byte[] ObjectData = ExtractImport.Data;
                     if (StripDebugInfo)
                     {
                         IMAGE_FILE_HEADER FileHeader = Rtl.RawToStruct<IMAGE_FILE_HEADER>(Rtl.ArrayResize(ObjectData, Marshal.SizeOf<IMAGE_FILE_HEADER>()));
@@ -119,6 +139,7 @@ public class LibExtractTask : Precomp4CTask
                                 if (SectionHeader.Name.SequenceEqual(".debug$T"u8.ToArray()))
                                 {
                                     SectionHeader.Name = [0, 0, 0, 0, 0, 0, 0, 0];
+                                    SectionHeader.Characteristics |= (UInt32)IMAGE_SCN.LNK_REMOVE;
                                     Rtl.StructToRaw(SectionHeader).CopyTo(ObjectData, SectionHeaderIndex);
                                 }
                                 SectionHeaderIndex += Marshal.SizeOf<IMAGE_SECTION_HEADER>();
