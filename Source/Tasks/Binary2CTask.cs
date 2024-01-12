@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using KNSoft.C4Lib;
+
 using Microsoft.Build.Framework;
+
+using KNSoft.C4Lib;
 
 namespace KNSoft.Precomp4C;
 
