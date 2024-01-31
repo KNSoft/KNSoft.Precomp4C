@@ -105,8 +105,10 @@ public class LibCreateTask : Precomp4CTask
                             ArgSize += Param switch
                             {
                                 "ptr" => FileHeader.GetSizeOfPointer(Machine),
-                                "long" => 4,
+                                "long" => FileHeader.GetSizeOfPointer(Machine),
                                 "int" => 4,
+                                "int64" => 8,
+                                "int128" => 16,
                                 "float" => 4,
                                 "double" => 8,
                                 _ => throw new ArgumentException("Unrecognized argument type: " + Arg + "in " + DllExport.OuterXml)
