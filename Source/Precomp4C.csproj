@@ -14,12 +14,12 @@
     <RepositoryUrl>https://github.com/KNSoft/$(MSBuildProjectName)</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <OutputType>Library</OutputType>
     <Product>$(MSBuildProjectName)</Product>
     <Authors>KNSoft</Authors>
     
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 
     <TargetsForTfmSpecificBuildOutput>
