@@ -23,6 +23,11 @@
       <OutputSource Condition="'%(Precomp4C_Binary2C.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
     </Precomp4C_Binary2C>
 
+    <Precomp4C_I18N>
+      <OutputHeader Condition="'%(Precomp4C_I18N.OutputHeader)' == ''">%(FullPath).g.h</OutputHeader>
+      <OutputSource Condition="'%(Precomp4C_I18N.OutputSource)' == ''">%(FullPath).g.c</OutputSource>
+    </Precomp4C_I18N>
+
   </ItemDefinitionGroup>
 
 </Project>

@@ -5,6 +5,7 @@
   <ItemType Name="Precomp4C_LibCreate" DisplayName="Precomp4C: Lib Create" />
   <ItemType Name="Precomp4C_LibExtract" DisplayName="Precomp4C: Lib Extract" />
   <ItemType Name="Precomp4C_Binary2C" DisplayName="Precomp4C: Binary To C" />
+  <ItemType Name="Precomp4C_I18N" DisplayName="Precomp4C: I18N" />
 
   <Rule Name="Precomp4C_LibCreate_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Lib Create" Order="300">
 
@@ -41,6 +42,20 @@
     </Rule.Categories>
     <Rule.DataSource>
       <DataSource Persistence="ProjectFile" ItemType="Precomp4C_Binary2C" />
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
+    <StringProperty Subtype="file" Name="OutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
+
+  </Rule>
+
+  <Rule Name="Precomp4C_I18N_Configuration" PageTemplate="tool" DisplayName="Precomp4C: I18N" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="Precomp4C_I18N" />
     </Rule.DataSource>
 
     <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />

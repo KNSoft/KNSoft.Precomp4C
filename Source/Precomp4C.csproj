@@ -32,6 +32,7 @@
     <RepositoryType>git</RepositoryType>
     <Version>1.0.9-alpha</Version>
     <PackageTags>windows utility native buildtool</PackageTags>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,6 +44,8 @@
     <Content Include="KNSoft.Precomp4C.targets" PackagePath="build\" />
     <Content Include="KNSoft.Precomp4C.xml" PackagePath="build\" />
     <None Include="..\README.md" Pack="true" PackagePath="" />
+
+    <Content Include="Include\**" PackagePath="Include\" />
   </ItemGroup>
 
   <ItemGroup>
