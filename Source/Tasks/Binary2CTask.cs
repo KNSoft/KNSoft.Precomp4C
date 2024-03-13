@@ -20,7 +20,8 @@ public class Binary2CTask : Precomp4CTask
     {
         try
         {
-            CreateCSourceOutputStreams(OutputHeader, OutputSource, out var HeaderStream, out var SourceStream);
+            FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
+            FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
 
             Byte[] Data = File.ReadAllBytes(Source);
             UInt32 RemainSize = (UInt32)Data.Length;

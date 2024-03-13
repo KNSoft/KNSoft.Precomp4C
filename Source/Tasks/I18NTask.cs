@@ -41,7 +41,8 @@ public class I18NTask : Precomp4CTask
     {
         try
         {
-            CreateCSourceOutputStreams(OutputHeader, OutputSource, out var HeaderStream, out var SourceStream);
+            FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
+            FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
 
             XmlDocument doc = new();
             doc.Load(Source);

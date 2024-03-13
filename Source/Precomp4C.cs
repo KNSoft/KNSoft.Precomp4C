@@ -18,17 +18,19 @@ public abstract class Precomp4CTask : Task
 
     protected static readonly UInt32 BytesPerLine = 25;
 
-    public static void CreateCSourceOutputStreams(String HeaderPath, String SourcePath, out FileStream HeaderStream, out FileStream SourceStream)
+    public static FileStream CreateCHeaderOutputStream(String FilePath)
     {
-        FileStream OutputHeaderStream = File.Open(HeaderPath, FileMode.Create, FileAccess.Write);
-        FileStream OutputSourceStream = File.Open(SourcePath, FileMode.Create, FileAccess.Write);
+        FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
+        Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
+        Rtl.StreamWrite(Stream, CodeFragment.PragmaOnce);
+        return Stream;
+    }
 
-        Rtl.StreamWrite(OutputHeaderStream, CodeFragment.AutoGenerateComment);
-        Rtl.StreamWrite(OutputSourceStream, CodeFragment.AutoGenerateComment);
-        Rtl.StreamWrite(OutputHeaderStream, CodeFragment.PragmaOnce);
-
-        HeaderStream = OutputHeaderStream;
-        SourceStream = OutputSourceStream;
+    public static FileStream CreateCSourceOutputStream(String FilePath)
+    {
+        FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
+        Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
+        return Stream;
     }
 
     public static Boolean FilterXmlArch(XmlAttributeCollection XmlAttr, IMAGE_FILE_MACHINE Machine)
