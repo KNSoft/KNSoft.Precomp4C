@@ -21,6 +21,7 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
     public static FileStream CreateCHeaderOutputStream(String FilePath)
     {
         FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
+        Rtl.StreamWrite(Stream, CodeFragment.Utf8Bom);
         Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
         Rtl.StreamWrite(Stream, CodeFragment.PragmaOnce);
         return Stream;
@@ -29,15 +30,21 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
     public static FileStream CreateCSourceOutputStream(String FilePath)
     {
         FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
+        Rtl.StreamWrite(Stream, CodeFragment.Utf8Bom);
         Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
         return Stream;
+    }
+
+    public static String EscapeCSymbolName(String SymbolName)
+    {
+        return SymbolName.Replace('.', '_');
     }
 
     public static void OutputCBytes(FileStream HeaderStream, FileStream SourceStream, String SymbolName, Byte[] Data)
     {
         UInt32 RemainSize = (UInt32)Data.Length;
         String SymbolDef = String.Format("unsigned char {0}[{1:D}]", SymbolName, RemainSize);
-        Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("extern " + SymbolDef + ";\r\n"));
+        Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("EXTERN_C " + SymbolDef + ";\r\n"));
         Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
         while (RemainSize > 0)
         {
@@ -54,7 +61,7 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
             }
             Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
         }
-        Rtl.StreamWrite(SourceStream, "};\r\n"u8.ToArray());
+        Rtl.StreamWrite(SourceStream, "};\r\n\r\n"u8.ToArray());
     }
 
     public static Boolean FilterXmlArch(XmlAttributeCollection XmlAttr, IMAGE_FILE_MACHINE Machine)

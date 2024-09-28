@@ -1,8 +1,28 @@
-﻿#include "I18N.inl"
+﻿#pragma once
 
-int Precomp4C_I18N_SetCurrentLocale(void* TableHandle, const wchar_t* LocaleName)
+#include "../Precomp4C.h"
+
+typedef struct _PRECOMP4C_I18N_LOCALE
 {
-    PPRECOMP4C_I18N_TABLE Table = TableHandle;
+    unsigned short FallbackIndex;
+    const wchar_t* Name;
+    const wchar_t* Strings[];
+} PRECOMP4C_I18N_LOCALE, *PPRECOMP4C_I18N_LOCALE;
+
+typedef struct _PRECOMP4C_I18N_TABLE
+{
+    PRECOMP4C_I18N_LOCALE* CurrentLocale;
+    unsigned short FallbackIndex;
+    unsigned short LocaleCount;
+    PRECOMP4C_I18N_LOCALE* Locales[];
+} PRECOMP4C_I18N_TABLE, *PPRECOMP4C_I18N_TABLE;
+
+__forceinline
+int
+Precomp4C_I18N_SetCurrentLocale(
+    PRECOMP4C_I18N_TABLE* Table,
+    const wchar_t* LocaleName)
+{
     unsigned short i;
     const wchar_t* Name;
     const wchar_t* NameToFind;
@@ -32,9 +52,12 @@ int Precomp4C_I18N_SetCurrentLocale(void* TableHandle, const wchar_t* LocaleName
     return -1;
 }
 
-const wchar_t* Precomp4C_I18N_GetString(void* TableHandle, int Index)
+__forceinline
+const wchar_t*
+Precomp4C_I18N_GetString(
+    PRECOMP4C_I18N_TABLE* Table,
+    int Index)
 {
-    PPRECOMP4C_I18N_TABLE Table = TableHandle;
     PPRECOMP4C_I18N_LOCALE Locale = Table->CurrentLocale == (void*)0 ?
         Table->Locales[Table->FallbackIndex] :
         Table->CurrentLocale;

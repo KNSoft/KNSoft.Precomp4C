@@ -4,7 +4,7 @@
   <!-- Property addon -->
 
   <PropertyGroup>
-    <IncludePath>$(MSBuildThisFileDirectory)..\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(MSBuildThisFileDirectory)Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
 
   <!-- Declare page schema, item names and tasks -->
@@ -222,10 +222,6 @@
 
       OutputHeader    = "%(Precomp4C_I18N_Source.OutputHeader)"
       OutputSource    = "%(Precomp4C_I18N_Source.OutputSource)" />
-
-    <ItemGroup>
-      <ClCompile Include="$(MSBuildThisFileDirectory)..\Include\Precomp4C\I18N\Precomp4C_I18N.c" />
-    </ItemGroup>
 
   </Target>
 

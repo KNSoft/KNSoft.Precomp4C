@@ -64,7 +64,7 @@ public class I18N : Precomp4CTask
                 XmlAttributeCollection TableNodeAttr = TableNode.Attributes;
                 String TableName = TableNodeAttr["Name"]?.Value ?? throw new ArgumentException("Table 'Name' unspecified in: " + TableNode.OuterXml);
 
-                I18NTable Table = new() { Name = TableName };
+                I18NTable Table = new() { Name = EscapeCSymbolName(TableName) };
                 UInt32 iString = 0;
 
                 foreach (XmlElement StringNode in TableNode.GetElementsByTagName("String").OfType<XmlElement>())
@@ -156,21 +156,21 @@ public class I18N : Precomp4CTask
 
             /* Write C source */
 
-            Rtl.StreamWrite(HeaderStream, "#include <Precomp4C/I18N/I18N.h>\r\n\r\n"u8.ToArray());
-            Rtl.StreamWrite(SourceStream, "#include <Precomp4C/I18N/I18N.inl>\r\n\r\n"u8.ToArray());
+            Rtl.StreamWrite(HeaderStream, "#include <KNSoft/Precomp4C/I18N/I18N.h>\r\n\r\n"u8.ToArray());
+            Rtl.StreamWrite(SourceStream, "#include <KNSoft/Precomp4C/I18N/I18N.h>\r\n\r\n"u8.ToArray());
             foreach (I18NTable Table in Tables)
             {
                 Rtl.StreamWrite(HeaderStream, "enum\r\n{\r\n"u8.ToArray());
                 foreach (String StringName in Table.StringNames)
                 {
                     Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes(
-                        "    I18N_" + Table.Name + "_" + StringName + ",\r\n"));
+                        "    I18N_" + Table.Name + '_' + StringName + ",\r\n"));
                 }
                 Rtl.StreamWrite(HeaderStream, "};\r\n\r\n"u8.ToArray());
 
-                String TableHandleDef = "void* I18N_Table_Handle_" + Table.Name;
+                String TableDef = "PRECOMP4C_I18N_TABLE I18N_Table_" + Table.Name;
                 Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
-                    "PRECOMP4C_I18N_TABLE I18N_Table_" + Table.Name + " = {\r\n" +
+                    TableDef + " = {\r\n" +
                     "    (void*)0,\r\n" +
                     "    " + Table.FallbackLocale.ToString() + ",\r\n" +
                     "    " + Table.Locales.Count + ",\r\n" +
@@ -194,9 +194,8 @@ public class I18N : Precomp4CTask
                 }
                 Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
                     "    }\r\n" +
-                    "};\r\n" +
-                    TableHandleDef + " = (void*)&I18N_Table_" + Table.Name + ";\r\n\r\n"));
-                Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("extern " + TableHandleDef + ";\r\n"));
+                    "};\r\n\r\n"));
+                Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("EXTERN_C " + TableDef + ";\r\n"));
             }
 
             HeaderStream.Dispose();

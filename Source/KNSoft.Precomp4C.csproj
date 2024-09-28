@@ -45,7 +45,7 @@
     <Content Include="KNSoft.Precomp4C.xml" PackagePath="build\" />
     <None Include="..\README.md" Pack="true" PackagePath="" />
 
-    <Content Include="Include\**" PackagePath="Include\" />
+    <Content Include="Include\**" PackagePath="build\Include\" />
   </ItemGroup>
 
   <ItemGroup>

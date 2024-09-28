@@ -22,7 +22,7 @@ public class Binary2C : Precomp4CTask
 
             OutputCBytes(HeaderStream,
                          SourceStream,
-                         "Precomp4C_Binary2C_" + Path.GetFileNameWithoutExtension(Source),
+                         "Precomp4C_Binary2C_" + EscapeCSymbolName(Path.GetFileNameWithoutExtension(Source)),
                          File.ReadAllBytes(Source));
 
             HeaderStream.Dispose();
