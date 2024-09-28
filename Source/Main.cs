@@ -11,7 +11,7 @@ using KNSoft.C4Lib.PEImage;
 
 namespace KNSoft.Precomp4C;
 
-public abstract class Precomp4CTask : Task
+public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
 {
     [Required]
     public required String Source { get; set; }

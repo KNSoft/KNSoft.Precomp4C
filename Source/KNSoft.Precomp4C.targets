@@ -25,11 +25,11 @@
     </AvailableItemName>
   </ItemGroup>
 
-  <UsingTask TaskName="KNSoft.Precomp4C.LibCreateTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
-  <UsingTask TaskName="KNSoft.Precomp4C.LibExtractTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
-  <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
-  <UsingTask TaskName="KNSoft.Precomp4C.I18NTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
-  <UsingTask TaskName="KNSoft.Precomp4C.Res2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.LibCreate" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.LibExtract" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.Binary2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.I18N" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Task.Res2C" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
 
   <!-- Extend CleanDependsOn to clean -->
 
@@ -75,7 +75,7 @@
              Importance = "High"
              Text       = "Precomp4C LibCreate Task compiling %(Precomp4C_LibCreate_Source.Identity)" />
 
-    <LibCreateTask
+    <KNSoft.Precomp4C.Task.LibCreate
         Condition   = "'@(Precomp4C_LibCreate_Source)' != '' and '%(Precomp4C_LibCreate_Source.ExcludedFromBuild)' != 'true'"
         Source      = "%(Precomp4C_LibCreate_Source.Identity)"
 
@@ -113,7 +113,7 @@
              Importance = "High"
              Text="Precomp4C LibExtract Task compiling %(Precomp4C_LibExtract_Source.Identity)" />
 
-    <LibExtractTask
+    <KNSoft.Precomp4C.Task.LibExtract
         Condition       = "'@(Precomp4C_LibExtract_Source)' != '' and '%(Precomp4C_LibExtract_Source.ExcludedFromBuild)' != 'true'"
         Source          = "%(Precomp4C_LibExtract_Source.Identity)"
 
@@ -121,7 +121,7 @@
         OutputDirectory = "%(Precomp4C_LibExtract_Source.OutputDirectory)"
         Platform        = "$(PlatformTarget)">
       <Output TaskParameter="ExtractedFiles" ItemName="Precomp4C_LibExtract_ExtractedFiles"/>
-    </LibExtractTask>
+    </KNSoft.Precomp4C.Task.LibExtract>
 
     <ItemGroup>
       <Link Include="@(Precomp4C_LibExtract_ExtractedFiles)"/>
@@ -169,7 +169,7 @@
              Importance = "High"
              Text       = "Precomp4C Binary2C Task compiling %(Precomp4C_Binary2C_Source.Identity)" />
 
-    <Binary2CTask
+    <KNSoft.Precomp4C.Task.Binary2C
       Condition       = "'@(Precomp4C_Binary2C_Source)' != '' and '%(Precomp4C_Binary2C_Source.ExcludedFromBuild)' != 'true'"
       Source          = "%(Precomp4C_Binary2C_Source.Identity)"
 
@@ -216,7 +216,7 @@
              Importance = "High"
              Text       = "Precomp4C I18N Task compiling %(Precomp4C_I18N_Source.Identity)" />
 
-    <I18NTask
+    <KNSoft.Precomp4C.Task.I18N
       Condition       = "'@(Precomp4C_I18N_Source)' != '' and '%(Precomp4C_I18N_Source.ExcludedFromBuild)' != 'true'"
       Source          = "%(Precomp4C_I18N_Source.Identity)"
 
@@ -241,7 +241,7 @@
              Importance = "High"
              Text       = "Precomp4C Res2C Task compiling %(ResourceCompile.ResourceOutputFileName)" />
 
-    <Res2CTask
+    <KNSoft.Precomp4C.Task.Res2C
       Condition       = "'%(ResourceCompile.ResourceOutputFileName)' != '' and '%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'"
       Source          = "%(ResourceCompile.ResourceOutputFileName)"
 

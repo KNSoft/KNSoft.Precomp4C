@@ -10,9 +10,9 @@ using Microsoft.Build.Framework;
 using KNSoft.C4Lib;
 using KNSoft.C4Lib.PEImage;
 
-namespace KNSoft.Precomp4C;
+namespace KNSoft.Precomp4C.Task;
 
-public class LibExtractTask : Precomp4CTask
+public class LibExtract : Precomp4CTask
 {
     [Required]
     public required String[] SearchPaths { get; set; }

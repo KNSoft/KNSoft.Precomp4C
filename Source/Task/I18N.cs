@@ -10,9 +10,9 @@ using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib;
 
-namespace KNSoft.Precomp4C;
+namespace KNSoft.Precomp4C.Task;
 
-public class I18NTask : Precomp4CTask
+public class I18N : Precomp4CTask
 {
     [Required]
     public required String OutputHeader { get; set; }

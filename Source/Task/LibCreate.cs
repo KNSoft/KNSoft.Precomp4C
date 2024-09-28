@@ -7,9 +7,9 @@ using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib.PEImage;
 
-namespace KNSoft.Precomp4C;
+namespace KNSoft.Precomp4C.Task;
 
-public class LibCreateTask : Precomp4CTask
+public class LibCreate : Precomp4CTask
 {
     [Required]
     public required String[] SearchPaths { get; set; }

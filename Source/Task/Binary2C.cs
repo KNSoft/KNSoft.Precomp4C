@@ -3,9 +3,9 @@ using System.IO;
 
 using Microsoft.Build.Framework;
 
-namespace KNSoft.Precomp4C;
+namespace KNSoft.Precomp4C.Task;
 
-public class Binary2CTask : Precomp4CTask
+public class Binary2C : Precomp4CTask
 {
     [Required]
     public required String OutputHeader { get; set; }
