@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-
   <ItemType Name="Precomp4C_LibCreate" DisplayName="Precomp4C: Lib Create" />
   <ItemType Name="Precomp4C_LibExtract" DisplayName="Precomp4C: Lib Extract" />
   <ItemType Name="Precomp4C_Binary2C" DisplayName="Precomp4C: Binary To C" />
@@ -60,6 +59,20 @@
 
     <StringProperty Subtype="file" Name="OutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
     <StringProperty Subtype="file" Name="OutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
+
+  </Rule>
+
+  <Rule Name="Precomp4C_Res2C_Configuration" PageTemplate="tool" DisplayName="Precomp4C: Resource To C" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="ResourceCompile" />
+    </Rule.DataSource>
+    <BoolProperty Name="P4CEnableRes2C" DisplayName="Enable" Description="Enable Precomp4C Resource To C output" Category="General" />
+    <StringProperty Subtype="file" Name="P4COutputHeader" DisplayName="Output Header" Description="Path to output header (.h)" Category="General" />
+    <StringProperty Subtype="file" Name="P4COutputSource" DisplayName="Output Source" Description="Path to output source (.c)" Category="General" />
 
   </Rule>
 

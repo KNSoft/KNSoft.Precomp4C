@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 
 using Microsoft.Build.Framework;
-
-using KNSoft.C4Lib;
 
 namespace KNSoft.Precomp4C;
 
@@ -23,29 +20,10 @@ public class Binary2CTask : Precomp4CTask
             FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
             FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
 
-            Byte[] Data = File.ReadAllBytes(Source);
-            UInt32 RemainSize = (UInt32)Data.Length;
-            String SymbolDef = String.Format("unsigned char {0}[{1:D}]",
-                                             "Precomp4C_Binary2C_" + Path.GetFileNameWithoutExtension(Source),
-                                             RemainSize);
-            Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("extern " + SymbolDef + ";\r\n"));
-            Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
-            while (RemainSize > 0)
-            {
-                UInt32 LineSize = Math.Min(RemainSize, BytesPerLine);
-                String Line = "    ";
-
-                for (UInt32 j = 0; j < LineSize; j++)
-                {
-                    Line += String.Format("0x{0:X2}", Data[(UInt32)Data.Length - RemainSize--]);
-                    if (RemainSize > 0)
-                    {
-                        Line += ", ";
-                    }
-                }
-                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
-            }
-            Rtl.StreamWrite(SourceStream, "};\r\n"u8.ToArray());
+            OutputCBytes(HeaderStream,
+                         SourceStream,
+                         "Precomp4C_Binary2C_" + Path.GetFileNameWithoutExtension(Source),
+                         File.ReadAllBytes(Source));
 
             HeaderStream.Dispose();
             SourceStream.Dispose();

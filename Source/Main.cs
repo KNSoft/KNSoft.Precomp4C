@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Text;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -30,6 +31,30 @@ public abstract class Precomp4CTask : Task
         FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
         Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
         return Stream;
+    }
+
+    public static void OutputCBytes(FileStream HeaderStream, FileStream SourceStream, String SymbolName, Byte[] Data)
+    {
+        UInt32 RemainSize = (UInt32)Data.Length;
+        String SymbolDef = String.Format("unsigned char {0}[{1:D}]", SymbolName, RemainSize);
+        Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("extern " + SymbolDef + ";\r\n"));
+        Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
+        while (RemainSize > 0)
+        {
+            UInt32 LineSize = Math.Min(RemainSize, BytesPerLine);
+            String Line = "    ";
+
+            for (UInt32 j = 0; j < LineSize; j++)
+            {
+                Line += String.Format("0x{0:X2}", Data[(UInt32)Data.Length - RemainSize--]);
+                if (RemainSize > 0)
+                {
+                    Line += ", ";
+                }
+            }
+            Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
+        }
+        Rtl.StreamWrite(SourceStream, "};\r\n"u8.ToArray());
     }
 
     public static Boolean FilterXmlArch(XmlAttributeCollection XmlAttr, IMAGE_FILE_MACHINE Machine)

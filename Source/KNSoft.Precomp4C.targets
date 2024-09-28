@@ -29,6 +29,7 @@
   <UsingTask TaskName="KNSoft.Precomp4C.LibExtractTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.Binary2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
   <UsingTask TaskName="KNSoft.Precomp4C.I18NTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
+  <UsingTask TaskName="KNSoft.Precomp4C.Res2CTask" AssemblyFile="$(MSBuildThisFileDirectory)..\lib\netstandard2.0\$(MSBuildThisFileName).dll" />
 
   <!-- Extend CleanDependsOn to clean -->
 
@@ -41,6 +42,7 @@
     <RemoveDir Directories="%(Precomp4C_LibExtract.OutputDirectory)" />
     <Delete Files="%(Precomp4C_Binary2C.OutputHeader);%(Precomp4C_Binary2C.OutputSource)" />
     <Delete Files="%(Precomp4C_I18N.OutputHeader);%(Precomp4C_I18N.OutputSource)" />
+    <Delete Files="%(ResourceCompile.P4COutputHeader);%(ResourceCompile.P4COutputSource)" />
   </Target>
 
   <!-- Targets -->
@@ -224,6 +226,27 @@
     <ItemGroup>
       <ClCompile Include="$(MSBuildThisFileDirectory)..\Include\Precomp4C\I18N\Precomp4C_I18N.c" />
     </ItemGroup>
+
+  </Target>
+
+  <Target
+    Name="_Precomp4C_Res2C"
+    BeforeTargets="$(Precomp4CBeforeTargets)"
+    AfterTargets="$(Precomp4CAfterTargets);ResourceCompile"
+    Inputs="%(ResourceCompile.ResourceOutputFileName);$(MSBuildProjectFile)"
+    Outputs="%(ResourceCompile.P4COutputHeader);%(ResourceCompile.P4COutputSource)"
+    DependsOnTargets="ResourceCompile">
+
+    <Message Condition  = "'%(ResourceCompile.ResourceOutputFileName)' != '' and '%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'"
+             Importance = "High"
+             Text       = "Precomp4C Res2C Task compiling %(ResourceCompile.ResourceOutputFileName)" />
+
+    <Res2CTask
+      Condition       = "'%(ResourceCompile.ResourceOutputFileName)' != '' and '%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'"
+      Source          = "%(ResourceCompile.ResourceOutputFileName)"
+
+      OutputHeader    = "%(ResourceCompile.P4COutputHeader)"
+      OutputSource    = "%(ResourceCompile.P4COutputSource)" />
 
   </Target>
 
