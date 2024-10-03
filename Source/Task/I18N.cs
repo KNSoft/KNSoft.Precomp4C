@@ -164,11 +164,11 @@ public class I18N : Precomp4CTask
                 foreach (String StringName in Table.StringNames)
                 {
                     Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes(
-                        "    I18N_" + Table.Name + '_' + StringName + ",\r\n"));
+                        "    Precomp4C_I18N_" + Table.Name + '_' + StringName + ",\r\n"));
                 }
                 Rtl.StreamWrite(HeaderStream, "};\r\n\r\n"u8.ToArray());
 
-                String TableDef = "PRECOMP4C_I18N_TABLE I18N_Table_" + Table.Name;
+                String TableDef = "PRECOMP4C_I18N_TABLE Precomp4C_I18N_Table_" + Table.Name;
                 Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
                     TableDef + " = {\r\n" +
                     "    (void*)0,\r\n" +
