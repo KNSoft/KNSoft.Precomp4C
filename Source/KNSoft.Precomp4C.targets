@@ -227,7 +227,7 @@
 
   <Target
     Name="_Precomp4C_Res2C"
-    BeforeTargets="$(Precomp4CBeforeTargets)"
+    BeforeTargets="$(Precomp4CBeforeTargets);ComputeRCOutputs"
     AfterTargets="$(Precomp4CAfterTargets);ResourceCompile"
     Inputs="%(ResourceCompile.ResourceOutputFileName);$(MSBuildProjectFile)"
     Outputs="%(ResourceCompile.P4COutputHeader);%(ResourceCompile.P4COutputSource)"
@@ -243,6 +243,10 @@
 
       OutputHeader    = "%(ResourceCompile.P4COutputHeader)"
       OutputSource    = "%(ResourceCompile.P4COutputSource)" />
+
+    <ItemGroup Condition="'@(ResourceCompile)' != ''">
+      <ResourceCompile Condition="'%(ResourceCompile.ExcludedFromBuild)' != 'true' and '%(ResourceCompile.P4CEnableRes2C)' == 'true'" Remove="%(ResourceCompile.Identity)" />
+    </ItemGroup>
 
   </Target>
 

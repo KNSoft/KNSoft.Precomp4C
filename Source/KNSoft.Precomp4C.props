@@ -29,8 +29,7 @@
     </Precomp4C_I18N>
 
     <ResourceCompile>
-      <P4CEnableRes2C Condition="'$(ConfigurationType)' == 'StaticLibrary'">true</P4CEnableRes2C>
-      <P4CEnableRes2C Condition="'$(ConfigurationType)' != 'StaticLibrary'">false</P4CEnableRes2C>
+      <P4CEnableRes2C Condition="'%(ResourceCompile.P4CEnableRes2C)' == ''">false</P4CEnableRes2C>
       <P4COutputHeader Condition="'%(ResourceCompile.P4COutputHeader)' == ''">%(FullPath).g.h</P4COutputHeader>
       <P4COutputSource Condition="'%(ResourceCompile.P4COutputSource)' == ''">%(FullPath).g.c</P4COutputSource>
     </ResourceCompile>
