@@ -38,8 +38,14 @@ Precomp4C_Res2C_AccessResource(
             ((size_t)Name <= 0xFFFF ? Entries[i].Name == Name : (wcscmp(Entries[i].Name, Name) == 0)) &&
             Entries[i].LangId == LanguageId)
         {
-            *Resource = Entries[i].Data;
-            *Length = Entries[i].Length;
+            if (Resource != (void*)0)
+            {
+                *Resource = Entries[i].Data;
+            }
+            if (Length != (void*)0)
+            {
+                *Length = Entries[i].Length;
+            }
             return true;
         }
     }
