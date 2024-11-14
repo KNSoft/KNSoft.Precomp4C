@@ -4,6 +4,9 @@
 #define _KNSOFT_PRECOMP4C_
 #endif
 
+// MS-Spec: Nonstandard extension used: zero-sized array in struct/union
+#pragma warning(disable: 4200)
+
 #ifndef EXTERN_C
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
