@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#ifndef _KNSOFT_PRECOMP4C_
+#define _KNSOFT_PRECOMP4C_
+#endif
+
 #ifndef EXTERN_C
 #ifdef __cplusplus
 #define EXTERN_C extern "C"

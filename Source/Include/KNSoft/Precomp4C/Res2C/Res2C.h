@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#ifndef _KNSOFT_PRECOMP4C_RES2C_
+#define _KNSOFT_PRECOMP4C_RES2C_
+#endif
+
 #include "../Precomp4C.h"
 
 #include <stdbool.h>

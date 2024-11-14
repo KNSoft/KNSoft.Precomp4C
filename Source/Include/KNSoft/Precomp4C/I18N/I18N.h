@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#ifndef _KNSOFT_PRECOMP4C_I18N_
+#define _KNSOFT_PRECOMP4C_I18N_
+#endif
+
 #include "../Precomp4C.h"
 
 typedef struct _PRECOMP4C_I18N_LOCALE
