@@ -18,6 +18,7 @@ typedef struct _PRECOMP4C_I18N_TABLE
     PRECOMP4C_I18N_LOCALE* CurrentLocale;
     unsigned short FallbackIndex;
     unsigned short LocaleCount;
+    unsigned int StringCount;
     PRECOMP4C_I18N_LOCALE* Locales[];
 } PRECOMP4C_I18N_TABLE, *PPRECOMP4C_I18N_TABLE;
 

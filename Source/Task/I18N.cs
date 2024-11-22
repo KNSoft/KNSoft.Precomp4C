@@ -174,6 +174,7 @@ public class I18N : Precomp4CTask
                     "    (void*)0,\r\n" +
                     "    " + Table.FallbackLocale.ToString() + ",\r\n" +
                     "    " + Table.Locales.Count + ",\r\n" +
+                    "    " + Table.StringNames.Count + ",\r\n" +
                     "    {\r\n"));
                 for (Int32 i = 0; i < Table.Locales.Count; i++)
                 {
