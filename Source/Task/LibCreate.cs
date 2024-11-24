@@ -98,7 +98,7 @@ public class LibCreate : Precomp4CTask
                     Arg = ExportAttr["Arg"]?.Value;
 
                     UInt32 ArgSize = 0;
-                    if (Arg != null)
+                    if (Arg != null && Arg.Length > 0)
                     {
                         foreach (String Param in Arg.Split(' '))
                         {
