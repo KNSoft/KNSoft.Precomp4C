@@ -18,7 +18,7 @@ typedef struct _PRECOMP4C_I18N_TABLE
     PRECOMP4C_I18N_LOCALE* CurrentLocale;
     unsigned short FallbackIndex;
     unsigned short LocaleCount;
-    unsigned int StringCount;
+    unsigned short StringCount;
     PRECOMP4C_I18N_LOCALE* Locales[];
 } PRECOMP4C_I18N_TABLE, *PPRECOMP4C_I18N_TABLE;
 
@@ -61,7 +61,7 @@ __forceinline
 const wchar_t*
 Precomp4C_I18N_GetString(
     PRECOMP4C_I18N_TABLE* Table,
-    int Index)
+    unsigned short Index)
 {
     PPRECOMP4C_I18N_LOCALE Locale = Table->CurrentLocale == (void*)0 ?
         Table->Locales[Table->FallbackIndex] :
