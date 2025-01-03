@@ -83,54 +83,6 @@ public class LibCreate : Precomp4CTask
                     continue;
                 }
 
-                /* CallConv */
-                if (Machine == IMAGE_FILE_MACHINE.AMD64 ||
-                    Machine == IMAGE_FILE_MACHINE.ARM64 ||
-                    Machine == IMAGE_FILE_MACHINE.ARMNT)
-                {
-                    CallConv = "__fastcall";
-                } else
-                {
-                    CallConv = ExportAttr["CallConv"]?.Value;
-                }
-                if (CallConv == "__stdcall")
-                {
-                    Arg = ExportAttr["Arg"]?.Value;
-
-                    UInt32 ArgSize = 0;
-                    if (Arg != null && Arg.Length > 0)
-                    {
-                        foreach (String Param in Arg.Split(' '))
-                        {
-                            ArgSize += Param switch
-                            {
-                                "ptr" => FileHeader.GetSizeOfPointer(Machine),
-                                "long" => FileHeader.GetSizeOfPointer(Machine),
-                                "int" => 4,
-                                "int64" => 8,
-                                "int128" => 16,
-                                "float" => 4,
-                                "double" => 8,
-                                _ => throw new ArgumentException("Unrecognized argument type: " + Arg + "in " + DllExport.OuterXml)
-                            };
-                        }
-                    }
-
-                    DecoratedName = '_' + ExportName + '@' + ArgSize.ToString();
-                    NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
-                } else if (CallConv == "__cdecl")
-                {
-                    DecoratedName = '_' + ExportName;
-                    NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
-                } else if (CallConv == "__fastcall")
-                {
-                    DecoratedName = ExportName;
-                    NameType = IMPORT_OBJECT_NAME_TYPE.NAME;
-                } else
-                {
-                    throw new ArgumentException("Unrecognized calling convention: " + CallConv);
-                }
-
                 /* Type */
                 Type = ExportAttr["Type"]?.Value;
                 if (Type != null)
@@ -145,6 +97,68 @@ public class LibCreate : Precomp4CTask
                 } else
                 {
                     ObjectType = IMPORT_OBJECT_TYPE.CODE;
+                }
+
+                if (ObjectType == IMPORT_OBJECT_TYPE.CODE)
+                {
+                    /* CallConv */
+                    if (Machine == IMAGE_FILE_MACHINE.AMD64 ||
+                        Machine == IMAGE_FILE_MACHINE.ARM64 ||
+                        Machine == IMAGE_FILE_MACHINE.ARMNT)
+                    {
+                        CallConv = "__fastcall";
+                    } else
+                    {
+                        CallConv = ExportAttr["CallConv"]?.Value;
+                    }
+                    if (CallConv == "__stdcall")
+                    {
+                        Arg = ExportAttr["Arg"]?.Value;
+
+                        UInt32 ArgSize = 0;
+                        if (Arg != null && Arg.Length > 0)
+                        {
+                            foreach (String Param in Arg.Split(' '))
+                            {
+                                ArgSize += Param switch
+                                {
+                                    "ptr" => FileHeader.GetSizeOfPointer(Machine),
+                                    "long" => FileHeader.GetSizeOfPointer(Machine),
+                                    "int" => 4,
+                                    "int64" => 8,
+                                    "int128" => 16,
+                                    "float" => 4,
+                                    "double" => 8,
+                                    _ => throw new ArgumentException("Unrecognized argument type: " + Arg + "in " + DllExport.OuterXml)
+                                };
+                            }
+                        }
+
+                        DecoratedName = '_' + ExportName + '@' + ArgSize.ToString();
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
+                    } else if (CallConv == "__cdecl")
+                    {
+                        DecoratedName = '_' + ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
+                    } else if (CallConv == "__fastcall")
+                    {
+                        DecoratedName = ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME;
+                    } else
+                    {
+                        throw new ArgumentException("Unrecognized calling convention: " + CallConv);
+                    }
+                } else
+                {
+                    if (Machine == IMAGE_FILE_MACHINE.I386)
+                    {
+                        DecoratedName = '_' + ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME_UNDECORATE;
+                    } else
+                    {
+                        DecoratedName = ExportName;
+                        NameType = IMPORT_OBJECT_NAME_TYPE.NAME;
+                    }
                 }
 
                 Ar.AddImport(Machine, ObjectType, NameType, DllName, DecoratedName);
