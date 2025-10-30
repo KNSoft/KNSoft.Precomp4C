@@ -3,12 +3,12 @@ using System.IO;
 using System.Collections.Generic;
 using System.Xml;
 using System.Linq;
-using System.Text;
 using System.Globalization;
 
 using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib;
+using KNSoft.C4Lib.CodeHelper;
 
 namespace KNSoft.Precomp4C.Task;
 
@@ -37,12 +37,14 @@ public class I18N : Precomp4CTask
 
     private readonly List<I18NTable> Tables = [];
 
+    private static readonly String IncludeI18N = "#include <KNSoft/Precomp4C/I18N/I18N.h>";
+
     public override Boolean Execute()
     {
         try
         {
-            FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
-            FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
+            StreamWriter HeaderStream = CreateCHeaderOutputStream(OutputHeader);
+            StreamWriter SourceStream = CreateCSourceOutputStream(OutputSource);
 
             XmlDocument doc = new();
             doc.Load(Source);
@@ -156,47 +158,44 @@ public class I18N : Precomp4CTask
 
             /* Write C source */
 
-            Rtl.StreamWrite(HeaderStream, "#include <KNSoft/Precomp4C/I18N/I18N.h>\r\n\r\n"u8.ToArray());
-            Rtl.StreamWrite(SourceStream, "#include <KNSoft/Precomp4C/I18N/I18N.h>\r\n\r\n"u8.ToArray());
+            Cpp.OutputWithNewLine(HeaderStream, IncludeI18N);
+            Cpp.OutputWithNewLine(SourceStream, IncludeI18N);
             foreach (I18NTable Table in Tables)
             {
-                Rtl.StreamWrite(HeaderStream, "enum\r\n{\r\n"u8.ToArray());
+                HeaderStream.WriteLine("enum");
+                HeaderStream.WriteLine("{");
                 foreach (String StringName in Table.StringNames)
                 {
-                    Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes(
-                        "    Precomp4C_I18N_" + Table.Name + '_' + StringName + ",\r\n"));
+                    HeaderStream.WriteLine("    Precomp4C_I18N_" + Table.Name + '_' + StringName + ',');
                 }
-                Rtl.StreamWrite(HeaderStream, "};\r\n\r\n"u8.ToArray());
+                Cpp.OutputWithNewLine(HeaderStream, "};");
 
                 String TableDef = "PRECOMP4C_I18N_TABLE Precomp4C_I18N_Table_" + Table.Name;
-                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
-                    TableDef + " = {\r\n" +
-                    "    (void*)0,\r\n" +
-                    "    " + Table.FallbackLocale.ToString() + ",\r\n" +
-                    "    " + Table.Locales.Count + ",\r\n" +
-                    "    " + Table.StringNames.Count + ",\r\n" +
-                    "    {\r\n"));
+                SourceStream.WriteLine(TableDef + " = {");
+                SourceStream.WriteLine("    (void*)0,");
+                SourceStream.WriteLine("    " + Table.FallbackLocale.ToString() + ',');
+                SourceStream.WriteLine("    " + Table.Locales.Count + ',');
+                SourceStream.WriteLine("    " + Table.StringNames.Count + ',');
+                SourceStream.WriteLine("   {");
                 for (Int32 i = 0; i < Table.Locales.Count; i++)
                 {
                     I18NLocale? Fallback = Table.Locales[i].Fallback;
 
-                    Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
-                        "        &(PRECOMP4C_I18N_LOCALE)\r\n" +
-                        "        {\r\n" +
-                        "            " + (Fallback == null ? "0xFFFF" : Table.Locales.IndexOf(Fallback).ToString()) + ",\r\n" +
-                        "            L\"" + Table.Locales[i].Name + "\",\r\n" +
-                        "            {\r\n"));
+                    SourceStream.WriteLine("        &(PRECOMP4C_I18N_LOCALE)");
+                    SourceStream.WriteLine("        {");
+                    SourceStream.WriteLine("            " + (Fallback == null ? "0xFFFF" : Table.Locales.IndexOf(Fallback).ToString()) + ',');
+                    SourceStream.WriteLine("            L\"" + Table.Locales[i].Name + "\",");
+                    SourceStream.WriteLine("            {");
                     foreach (String? StringValue in Table.Locales[i].Strings)
                     {
-                        Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
-                            "                " + (StringValue == null ? "(void*)0" : "L\"" + StringValue + "\"") + ",\r\n"));
+                        SourceStream.WriteLine("                " + (StringValue == null ? "(void*)0" : "L\"" + StringValue + "\"") + ',');
                     }
-                    Rtl.StreamWrite(SourceStream, "            }\r\n        },\r\n"u8.ToArray());
+                    SourceStream.WriteLine("            }");
+                    SourceStream.WriteLine("        },");
                 }
-                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(
-                    "    }\r\n" +
-                    "};\r\n\r\n"));
-                Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("EXTERN_C " + TableDef + ";\r\n"));
+                SourceStream.WriteLine("    }");
+                Cpp.OutputWithNewLine(SourceStream, "};");
+                HeaderStream.WriteLine("EXTERN_C " + TableDef + ';');
             }
 
             HeaderStream.Dispose();

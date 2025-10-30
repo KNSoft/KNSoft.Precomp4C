@@ -8,6 +8,7 @@ using Microsoft.Build.Utilities;
 
 using KNSoft.C4Lib;
 using KNSoft.C4Lib.PEImage;
+using KNSoft.C4Lib.CodeHelper;
 
 namespace KNSoft.Precomp4C;
 
@@ -18,20 +19,18 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
 
     protected static readonly UInt32 BytesPerLine = 25;
 
-    public static FileStream CreateCHeaderOutputStream(String FilePath)
+    public static StreamWriter CreateCHeaderOutputStream(String FilePath)
     {
-        FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
-        Rtl.StreamWrite(Stream, CodeFragment.Utf8Bom);
-        Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
-        Rtl.StreamWrite(Stream, CodeFragment.PragmaOnce);
+        StreamWriter Stream = Cpp.CreateOutputFile(FilePath);
+        Cpp.OutputWithNewLine(Stream, Cpp.CodeFragment.AutoGenerateFileComment);
+        Cpp.OutputWithNewLine(Stream, Cpp.CodeFragment.PragmaOnce);
         return Stream;
     }
 
-    public static FileStream CreateCSourceOutputStream(String FilePath)
+    public static StreamWriter CreateCSourceOutputStream(String FilePath)
     {
-        FileStream Stream = File.Open(FilePath, FileMode.Create, FileAccess.Write);
-        Rtl.StreamWrite(Stream, CodeFragment.Utf8Bom);
-        Rtl.StreamWrite(Stream, CodeFragment.AutoGenerateComment);
+        StreamWriter Stream = Cpp.CreateOutputFile(FilePath);
+        Cpp.OutputWithNewLine(Stream, Cpp.CodeFragment.AutoGenerateFileComment);
         return Stream;
     }
 
@@ -40,12 +39,12 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
         return SymbolName.Replace('.', '_');
     }
 
-    public static void OutputCBytes(FileStream HeaderStream, FileStream SourceStream, String SymbolName, Byte[] Data)
+    public static void OutputCBytes(StreamWriter HeaderStream, StreamWriter SourceStream, String SymbolName, Byte[] Data)
     {
         UInt32 RemainSize = (UInt32)Data.Length;
         String SymbolDef = String.Format("unsigned char {0}[{1:D}]", SymbolName, RemainSize);
-        Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("EXTERN_C " + SymbolDef + ";\r\n"));
-        Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(SymbolDef + " = {\r\n"));
+        HeaderStream.WriteLine("EXTERN_C " + SymbolDef + ";");
+        SourceStream.WriteLine(SymbolDef + " = {");
         while (RemainSize > 0)
         {
             UInt32 LineSize = Math.Min(RemainSize, BytesPerLine);
@@ -59,9 +58,9 @@ public abstract class Precomp4CTask : Microsoft.Build.Utilities.Task
                     Line += ", ";
                 }
             }
-            Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(Line + "\r\n"));
+            SourceStream.WriteLine(Line);
         }
-        Rtl.StreamWrite(SourceStream, "};\r\n\r\n"u8.ToArray());
+        Cpp.OutputWithNewLine(SourceStream, "};");
     }
 
     public static Boolean FilterXmlArch(XmlAttributeCollection XmlAttr, IMAGE_FILE_MACHINE Machine)

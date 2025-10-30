@@ -17,8 +17,8 @@ public class Binary2C : Precomp4CTask
     {
         try
         {
-            FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
-            FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
+            StreamWriter HeaderStream = CreateCHeaderOutputStream(OutputHeader);
+            StreamWriter SourceStream = CreateCSourceOutputStream(OutputSource);
 
             OutputCBytes(HeaderStream,
                          SourceStream,

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 using Microsoft.Build.Framework;
 
 using KNSoft.C4Lib;
-using System.Collections.Generic;
-using System.Text;
+using KNSoft.C4Lib.CodeHelper;
 
 namespace KNSoft.Precomp4C.Task;
 
@@ -61,18 +61,18 @@ public class Res2C : Precomp4CTask
         }
     }
 
-    private static readonly Byte[] IncludeRes2C = "#include <KNSoft/Precomp4C/Res2C/Res2C.h>\r\n\r\n"u8.ToArray();
+    private static readonly String IncludeRes2C = "#include <KNSoft/Precomp4C/Res2C/Res2C.h>";
 
     public override Boolean Execute()
     {
         try
         {
             List<DataEntry> Entries = [];
-            FileStream HeaderStream = CreateCHeaderOutputStream(OutputHeader);
-            FileStream SourceStream = CreateCSourceOutputStream(OutputSource);
+            StreamWriter HeaderStream = CreateCHeaderOutputStream(OutputHeader);
+            StreamWriter SourceStream = CreateCSourceOutputStream(OutputSource);
 
-            Rtl.StreamWrite(HeaderStream, IncludeRes2C);
-            Rtl.StreamWrite(SourceStream, IncludeRes2C);
+            Cpp.OutputWithNewLine(HeaderStream, IncludeRes2C);
+            Cpp.OutputWithNewLine(SourceStream, IncludeRes2C);
 
             Byte[] Data = File.ReadAllBytes(Source);
             UInt32 DataSize, HeaderSize;
@@ -108,18 +108,18 @@ public class Res2C : Precomp4CTask
             {
                 String TableDef = "PRECOMP4C_RES2C_ENTRY Precomp4C_Res2C_" +
                                   EscapeCSymbolName(Path.GetFileNameWithoutExtension(Source)) + '[' + Entries.Count.ToString() + ']';
-                Rtl.StreamWrite(HeaderStream, Encoding.UTF8.GetBytes("EXTERN_C " + TableDef + ';'));
-                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes(TableDef + " = {\r\n"));
+                HeaderStream.WriteLine("EXTERN_C " + TableDef + ';');
+                SourceStream.WriteLine(TableDef + " = {");
                 for (Int32 i = 0; i < Entries.Count; i++)
                 {
-                    Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes("    { " +
-                                                                         Entries[i].TypeDef + ", " +
-                                                                         Entries[i].NameDef + ", " +
-                                                                         Entries[i].LangId.ToString() + ", " +
-                                                                         Entries[i].Symbol + ", " +
-                                                                         "sizeof(" + Entries[i].Symbol + ") },\r\n"));
+                    SourceStream.WriteLine("    { " +
+                                           Entries[i].TypeDef + ", " +
+                                           Entries[i].NameDef + ", " +
+                                           Entries[i].LangId.ToString() + ", " +
+                                           Entries[i].Symbol + ", " +
+                                           "sizeof(" + Entries[i].Symbol + ") },");
                 }
-                Rtl.StreamWrite(SourceStream, Encoding.UTF8.GetBytes("};\r\n"));
+                SourceStream.WriteLine("};");
             }
 
             HeaderStream.Dispose();
